@@ -41,6 +41,53 @@ abstract contract Centrifuge_TestBase is ForkTestBase {
         return 21988625;  // Mar 6, 2025
     }
 
+    function setUp() public virtual override {
+        super.setUp();
+
+        vm.startPrank(Ethereum.SPARK_PROXY);
+        rateLimits.setRateLimitData(
+            mainnetController.getERC7540RequestDepositRateLimitKey(address(jTreasuryVault), Ethereum.USDC),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            mainnetController.getERC7540ClaimDepositRateLimitKey(address(jTreasuryVault)),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            mainnetController.getERC7540RequestRedeemRateLimitKey(address(jTreasuryVault)),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            mainnetController.getERC7540ClaimRedeemRateLimitKey(address(jTreasuryVault)),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            mainnetController.getCentrifugeCancelDepositRateLimitKey(address(jTreasuryVault)),
+            1,
+            0
+        );
+        rateLimits.setRateLimitData(
+            mainnetController.getCentrifugeClaimCancelDepositRateLimitKey(address(jTreasuryVault)),
+            1,
+            0
+        );
+        rateLimits.setRateLimitData(
+            mainnetController.getCentrifugeCancelRedeemRateLimitKey(address(jTreasuryVault)),
+            1,
+            0
+        );
+        rateLimits.setRateLimitData(
+            mainnetController.getCentrifugeClaimCancelRedeemRateLimitKey(address(jTreasuryVault)),
+            1,
+            0
+        );
+        vm.stopPrank();
+    }
+
 }
 
 contract MainnetController_Centrifuge_RequestDepositERC7540_Tests is Centrifuge_TestBase {

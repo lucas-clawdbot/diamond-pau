@@ -59,6 +59,49 @@ abstract contract Centrifuge_TestBase is ForkTestBase {
 
         globalEscrow = manager.globalEscrow();
         poolEscrow   = manager.poolEscrow(poolId);
+
+        vm.startPrank(GROVE_EXECUTOR);
+        rateLimits.setRateLimitData(
+            foreignController.getERC7540RequestDepositRateLimitKey(address(centrifugeV3Vault), USDC_AVALANCHE),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            foreignController.getERC7540ClaimDepositRateLimitKey(address(centrifugeV3Vault)),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            foreignController.getERC7540RequestRedeemRateLimitKey(address(centrifugeV3Vault)),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            foreignController.getERC7540ClaimRedeemRateLimitKey(address(centrifugeV3Vault)),
+            3_000_000e6,
+            uint256(3_000_000e6) / 1 days
+        );
+        rateLimits.setRateLimitData(
+            foreignController.getCentrifugeCancelDepositRateLimitKey(address(centrifugeV3Vault)),
+            1,
+            0
+        );
+        rateLimits.setRateLimitData(
+            foreignController.getCentrifugeClaimCancelDepositRateLimitKey(address(centrifugeV3Vault)),
+            1,
+            0
+        );
+        rateLimits.setRateLimitData(
+            foreignController.getCentrifugeCancelRedeemRateLimitKey(address(centrifugeV3Vault)),
+            1,
+            0
+        );
+        rateLimits.setRateLimitData(
+            foreignController.getCentrifugeClaimCancelRedeemRateLimitKey(address(centrifugeV3Vault)),
+            1,
+            0
+        );
+        vm.stopPrank();
     }
 
 }
@@ -151,9 +194,10 @@ contract ForeignController_Centrifuge_ClaimDepositERC7540_Tests is Centrifuge_Te
         requestDepositKey = foreignController.getERC7540RequestDepositRateLimitKey(address(centrifugeV3Vault), USDC_AVALANCHE);
         claimDepositKey   = foreignController.getERC7540ClaimDepositRateLimitKey(address(centrifugeV3Vault));
 
-        vm.prank(GROVE_EXECUTOR);
+        vm.startPrank(GROVE_EXECUTOR);
         rateLimits.setRateLimitData(requestDepositKey, 1_500_000e6, uint256(1_500_000e6) / 1 days);
         rateLimits.setRateLimitData(claimDepositKey,   1_500_000e6, uint256(1_500_000e6) / 1 days);
+        vm.stopPrank();
     }
 
     function test_claimDepositERC7540_notAllocator() external {

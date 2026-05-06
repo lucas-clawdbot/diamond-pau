@@ -36,6 +36,19 @@ abstract contract Merkl_TestBase is ForkTestBase {
 
     function setUp() public override {
         super.setUp();
+
+        vm.startPrank(SparkEthereum.SPARK_PROXY);
+        rateLimits.setRateLimitData(
+            IMerklFacet(address(mainnetController)).getToggleOperatorRateLimitKey(address(merklDistributor), operator1),
+            1,
+            0
+        );
+        rateLimits.setRateLimitData(
+            IMerklFacet(address(mainnetController)).getToggleOperatorRateLimitKey(address(merklDistributor), operator2),
+            1,
+            0
+        );
+        vm.stopPrank();
     }
 
     function _getBlock() internal pure override returns (uint256) {
@@ -55,10 +68,10 @@ contract MainnetController_Merkl_ToggleOperator_FailureTests is Merkl_TestBase {
         mainnetController.toggleOperatorMerkl(address(merklDistributor), operator1);
     }
 
-    function test_toggleOperatorMerkl_zeroOperator() external {
-        vm.expectRevert("MerklFacet/zero-operator");
+    function test_toggleOperatorMerkl_invalidAction() external {
+        vm.expectRevert("MerklFacet/invalid-action");
         vm.prank(allocator);
-        mainnetController.toggleOperatorMerkl(address(merklDistributor), address(0));
+        mainnetController.toggleOperatorMerkl(address(merklDistributor), makeAddr("unauthorized-operator"));
     }
 
 }

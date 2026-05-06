@@ -33,6 +33,16 @@ interface ISUSDELike {
 
 abstract contract Ethena_TestBase is ForkTestBase {
 
+    function setUp() public virtual override {
+        super.setUp();
+
+        vm.startPrank(SPARK_PROXY);
+        rateLimits.setRateLimitData(mainnetController.usdeSetDelegatedSignerRateLimitKey(),    1, 0);
+        rateLimits.setRateLimitData(mainnetController.usdeRemoveDelegatedSignerRateLimitKey(), 1, 0);
+        rateLimits.setRateLimitData(mainnetController.usdeUnstakeRateLimitKey(),               1, 0);
+        vm.stopPrank();
+    }
+
     function _getBlock() internal pure override returns (uint256) {
         return 21417200;  // Dec 16, 2024
     }
@@ -53,6 +63,16 @@ contract MainnetController_Ethena_SetDelegatedSigner_Tests is Ethena_TestBase {
             address(this),
             ALLOCATOR_ROLE
         ));
+        mainnetController.setDelegatedSigner(makeAddr("signer"));
+    }
+
+    function test_setDelegatedSigner_invalidAction() external {
+        vm.startPrank(SPARK_PROXY);
+        rateLimits.setRateLimitData(mainnetController.usdeSetDelegatedSignerRateLimitKey(), 0, 0);
+        vm.stopPrank();
+
+        vm.expectRevert("USDEFacet/invalid-action");
+        vm.prank(allocator);
         mainnetController.setDelegatedSigner(makeAddr("signer"));
     }
 
@@ -96,6 +116,16 @@ contract MainnetController_Ethena_RemoveDelegatedSigner_Tests is Ethena_TestBase
             address(this),
             ALLOCATOR_ROLE
         ));
+        mainnetController.removeDelegatedSigner(makeAddr("signer"));
+    }
+
+    function test_removeDelegatedSigner_invalidAction() external {
+        vm.startPrank(SPARK_PROXY);
+        rateLimits.setRateLimitData(mainnetController.usdeRemoveDelegatedSignerRateLimitKey(), 0, 0);
+        vm.stopPrank();
+
+        vm.expectRevert("USDEFacet/invalid-action");
+        vm.prank(allocator);
         mainnetController.removeDelegatedSigner(makeAddr("signer"));
     }
 
@@ -571,6 +601,16 @@ contract MainnetController_Ethena_UnstakeSUSDE_Tests is Ethena_TestBase {
             address(this),
             ALLOCATOR_ROLE
         ));
+        mainnetController.unstakeSUSDe();
+    }
+
+    function test_unstakeSUSDE_invalidAction() external {
+        vm.startPrank(SPARK_PROXY);
+        rateLimits.setRateLimitData(mainnetController.usdeUnstakeRateLimitKey(), 0, 0);
+        vm.stopPrank();
+
+        vm.expectRevert("USDEFacet/invalid-action");
+        vm.prank(allocator);
         mainnetController.unstakeSUSDe();
     }
 

@@ -479,7 +479,7 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(centrifugeFacet, "CentrifugeFacet");
 
-        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](8);
+        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](12);
 
         wires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.setCentrifugeRecipient.selector,
@@ -519,6 +519,26 @@ abstract contract ForkTestBase is DssTest {
         wires[7] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.getCentrifugeRecipient.selector,
             ICentrifugeFacet.getRecipient.selector
+        );
+
+        wires[8] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.getCentrifugeCancelDepositRateLimitKey.selector,
+            ICentrifugeFacet.getCancelDepositRateLimitKey.selector
+        );
+
+        wires[9] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.getCentrifugeClaimCancelDepositRateLimitKey.selector,
+            ICentrifugeFacet.getClaimCancelDepositRateLimitKey.selector
+        );
+
+        wires[10] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.getCentrifugeCancelRedeemRateLimitKey.selector,
+            ICentrifugeFacet.getCancelRedeemRateLimitKey.selector
+        );
+
+        wires[11] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.getCentrifugeClaimCancelRedeemRateLimitKey.selector,
+            ICentrifugeFacet.getClaimCancelRedeemRateLimitKey.selector
         );
 
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({
@@ -723,11 +743,16 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(merklFacet, "MerklFacet");
 
-        IEnumerableIntegrations.Wire[] memory merklWires = new IEnumerableIntegrations.Wire[](1);
+        IEnumerableIntegrations.Wire[] memory merklWires = new IEnumerableIntegrations.Wire[](2);
 
         merklWires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.toggleOperatorMerkl.selector,
             IMerklFacet.toggleOperator.selector
+        );
+
+        merklWires[1] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.getToggleOperatorRateLimitKey.selector,
+            IMerklFacet.getToggleOperatorRateLimitKey.selector
         );
 
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({
@@ -858,7 +883,7 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(farmFacet, "FarmFacet");
 
-        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](5);
+        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](6);
 
         wires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.claimRewardFromFarm.selector,
@@ -883,6 +908,11 @@ abstract contract ForkTestBase is DssTest {
         wires[4] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.getFarmWithdrawRateLimitKey.selector,
             IFarmFacet.getWithdrawRateLimitKey.selector
+        );
+
+        wires[5] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.getFarmClaimRewardRateLimitKey.selector,
+            IFarmFacet.getClaimRewardRateLimitKey.selector
         );
 
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({
@@ -1179,7 +1209,7 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(weethFacet, "WEETHFacet");
 
-        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](5);
+        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](6);
 
         wires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.depositToWeETH.selector,
@@ -1206,6 +1236,11 @@ abstract contract ForkTestBase is DssTest {
             IWEETHFacet.getRequestWithdrawRateLimitKey.selector
         );
 
+        wires[5] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.getWEETHClaimWithdrawRateLimitKey.selector,
+            IWEETHFacet.getClaimWithdrawRateLimitKey.selector
+        );
+
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({
             facet : weethFacet,
             wires : wires
@@ -1223,7 +1258,7 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(wstethFacet, "WSTETHFacet");
 
-        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](5);
+        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](6);
 
         wires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.depositToWstETH.selector,
@@ -1250,6 +1285,11 @@ abstract contract ForkTestBase is DssTest {
             IWSTETHFacet.requestWithdrawRateLimitKey.selector
         );
 
+        wires[5] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.wstethClaimWithdrawRateLimitKey.selector,
+            IWSTETHFacet.claimWithdrawRateLimitKey.selector
+        );
+
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({
             facet : wstethFacet,
             wires : wires
@@ -1268,7 +1308,7 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(usdeFacet, "USDEFacet");
 
-        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](10);
+        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](13);
 
         wires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.cooldownAssetsSUSDe.selector,
@@ -1320,6 +1360,21 @@ abstract contract ForkTestBase is DssTest {
             IUSDEFacet.cooldownRateLimitKey.selector
         );
 
+        wires[10] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.usdeSetDelegatedSignerRateLimitKey.selector,
+            IUSDEFacet.setDelegatedSignerRateLimitKey.selector
+        );
+
+        wires[11] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.usdeRemoveDelegatedSignerRateLimitKey.selector,
+            IUSDEFacet.removeDelegatedSignerRateLimitKey.selector
+        );
+
+        wires[12] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.usdeUnstakeRateLimitKey.selector,
+            IUSDEFacet.unstakeRateLimitKey.selector
+        );
+
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({
             facet : usdeFacet,
             wires : wires
@@ -1333,10 +1388,15 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(wrapProxyETHFacet, "WrapProxyETHFacet");
 
-        IEnumerableIntegrations.Wire[] memory wrapWires = new IEnumerableIntegrations.Wire[](1);
+        IEnumerableIntegrations.Wire[] memory wrapWires = new IEnumerableIntegrations.Wire[](2);
         wrapWires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.wrapAllProxyETH.selector,
             IWrapProxyETHFacet.wrapAll.selector
+        );
+
+        wrapWires[1] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.wrapAllProxyETHRateLimitKey.selector,
+            IWrapProxyETHFacet.wrapRateLimitKey.selector
         );
 
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({
@@ -1352,7 +1412,7 @@ abstract contract ForkTestBase is DssTest {
 
         vm.label(usdsFacet, "USDSFacet");
 
-        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](5);
+        IEnumerableIntegrations.Wire[] memory wires = new IEnumerableIntegrations.Wire[](6);
 
         wires[0] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.mintUSDS.selector,
@@ -1377,6 +1437,11 @@ abstract contract ForkTestBase is DssTest {
         wires[4] = IEnumerableIntegrations.Wire(
             IMainnetControllerFull.usdsVault.selector,
             IUSDSFacet.vault.selector
+        );
+
+        wires[5] = IEnumerableIntegrations.Wire(
+            IMainnetControllerFull.usdsBurnRateLimitKey.selector,
+            IUSDSFacet.burnRateLimitKey.selector
         );
 
         IEnumerableIntegrations.Config memory config = IEnumerableIntegrations.Config({

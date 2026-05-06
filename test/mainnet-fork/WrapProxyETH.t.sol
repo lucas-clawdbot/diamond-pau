@@ -19,6 +19,14 @@ contract MainnetController_WrapAllProxyETH_Tests is ForkTestBase {
 
     IERC20Like internal constant WETH = IERC20Like(Ethereum.WETH);
 
+    function setUp() public override {
+        super.setUp();
+
+        vm.startPrank(Ethereum.SPARK_PROXY);
+        rateLimits.setRateLimitData(mainnetController.wrapAllProxyETHRateLimitKey(), 1, 0);
+        vm.stopPrank();
+    }
+
     function test_wrapAllProxyETH_reentrancy() external {
         _setControllerEntered();
 
@@ -32,6 +40,18 @@ contract MainnetController_WrapAllProxyETH_Tests is ForkTestBase {
             address(this),
             ALLOCATOR_ROLE
         ));
+        mainnetController.wrapAllProxyETH();
+    }
+
+    function test_wrapAllProxyETH_invalidAction() external {
+        vm.startPrank(Ethereum.SPARK_PROXY);
+        rateLimits.setRateLimitData(mainnetController.wrapAllProxyETHRateLimitKey(), 0, 0);
+        vm.stopPrank();
+
+        deal(address(almProxy), 1 ether);
+
+        vm.expectRevert("WrapProxyETHFacet/invalid-action");
+        vm.prank(allocator);
         mainnetController.wrapAllProxyETH();
     }
 

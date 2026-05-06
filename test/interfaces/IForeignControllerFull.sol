@@ -210,6 +210,11 @@ interface IForeignControllerFull is IController {
 
     function toggleOperatorMerkl(address distributor, address operator) external;
 
+    function getToggleOperatorRateLimitKey(address distributor, address operator)
+        external
+        pure
+        returns (bytes32 key);
+
     /**********************************************************************************************/
     /*** PendleFacet actions                                                                    ***/
     /**********************************************************************************************/
